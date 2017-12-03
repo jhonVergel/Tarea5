@@ -5,6 +5,7 @@ imagenes: plots.py datos.dat
 datos.dat:Curva
 	./Curva.x> datos.dat
 Curva: CurvaRotacion.c
+	sed '1d' RadialVelocities.dat > mynewfile.txt
 	gcc CurvaRotacion.c -lm -o Curva.x
 	
 

@@ -18,7 +18,7 @@ float Likelihood(float *yobs,float *ymod);
 
 int main()
 {
-	FILE *in = fopen("RadialVelocities.dat", "r");
+	FILE *in = fopen("mynewfile.txt", "r");
 	float *yobs;
 	float *ymod;
 	float *ypri;
