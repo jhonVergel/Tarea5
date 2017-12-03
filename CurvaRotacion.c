@@ -8,9 +8,8 @@
 
 void Datos(int nfilas, FILE *in, float *x, float *y);
 float Likelihood(float *yobs,float *ymod);
-float modelo(float mb,float md,float mh,float Robs);
 
-#define iteraciones 2000
+#define iteraciones 20000
 #define bb 0.2497
 #define bd 5.16
 #define ad 0.3105
@@ -43,14 +42,15 @@ int main()
 	
 	Datos(600, in, Robs , yobs);
 	//para cero
-	mb_walk[0]= 350;
+	mb_walk[0]= 400;
 	mh_walk[0]= 10000;
 	md_walk[0]= 7500;
 	for(i=0;i<300;i++)
 	{
-		ymod[i]=modelo(mb_walk[0],md_walk[0],mh_walk[0],Robs[i]);
+		ymod[i]=sqrt(mb_walk[0])*Robs[i]/ pow(pow(Robs[i],2)+pow(bb,2),3/2) + sqrt(md_walk[0])*Robs[i]/(pow(pow(Robs[i],2)+pow((bd+ad),2),3/2))+ sqrt(mh_walk[0])/(pow(pow(Robs[i],2)+pow(ah,2),1/4));
 		
 	}
+
 
 
         l_walk[0]= Likelihood(yobs,ymod);
@@ -74,12 +74,11 @@ int main()
 		
 		for(i=0;i<300;i++)
 		{
-		ymod[i]=modelo(mb_walk[j],md_walk[j],mh_walk[j],Robs[i]);
-		
+		ymod[i]=sqrt(mb_walk[j])*Robs[i]/ pow(pow(Robs[i],2)+pow(bb,2),3/2) + sqrt(md_walk[j])*Robs[i]/(pow(pow(Robs[i],2)+pow((bd+ad),2),3/2))+ sqrt(mh_walk[j])/(pow(pow(Robs[i],2)+pow(ah,2),1/4));
 		}
 		for(i=0;i<300;i++)
 		{
-		ypri[i]=modelo(bprime,dprime,hprime,Robs[i]);
+		ypri[i]=sqrt(bprime)*Robs[i]/ pow(pow(Robs[i],2)+pow(bb,2),3/2) + sqrt(dprime)*Robs[i]/(pow(pow(Robs[i],2)+pow((bd+ad),2),3/2))+ sqrt(hprime)/(pow(pow(Robs[i],2)+pow(ah,2),1/4));
 		}
 
 		lini= Likelihood(yobs,ymod);
@@ -135,12 +134,7 @@ int main()
 	return 0;
 }
 
-float modelo(float mb,float md,float mh,float Robs)
-{
-float model;
-model= sqrt(mb)*Robs/ pow(pow(Robs,2)+pow(bb,2),3/2) + sqrt(md)*Robs/(pow(pow(Robs,2)+pow((bd+ad),2),3/2))+ sqrt(mh)/(pow(pow(Robs,2)+pow(ah,2),1/4));
-return model;
-}
+
 
 
 float Likelihood(float *yobs,float *ymod)
@@ -173,6 +167,7 @@ void Datos(int nfilas, FILE *in, float *x, float *y)
 	int ny;
 	for(i=0; i < nfilas; i++)
 	{	
+		
 		if((i%2)==0)
         	{
 			fscanf(in, "%f \n", &x[nx]);
